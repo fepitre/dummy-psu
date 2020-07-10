@@ -1,0 +1,9 @@
+**.cmd
+**.ko
+**.o
+**.mod*
+.vscode
+*.symvers
+*.order
+qubes-psu-client
+pkgs

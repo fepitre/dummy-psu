@@ -1,0 +1,13 @@
+[Unit]
+Description=Dummy psu module loader service
+ConditionPathExists=/var/run/qubes-service/dummy-psu
+After=default.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/sbin/modprobe dummy-psu
+ExecStop=/sbin/rmmod dummy-psu
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import json
+import pyudev
+import time
+
+from multiprocessing import Process
+
+SYS_CLASS_POWER_SUPPLY = '/sys/class/power_supply'
+
+def get_sysfs(psu_name, item):
+    fp = SYS_CLASS_POWER_SUPPLY + '/%s/%s' % (psu_name, item)
+    result = None
+    if os.path.exists(fp):
+        with open(fp, 'r') as fd:
+            result = fd.read().rstrip('\n').split('\n')
+    
+    return result
+
+def get_psu_type(psu_name):
+    ptype = get_sysfs(psu_name, 'type')
+    if ptype:
+        return 'POWER_SUPPLY_TYPE_' + ptype[0].upper()
+    else:
+        return 'POWER_SUPPLY_TYPE_UNKNOWN'
+
+def get_psp(psu_name, data):
+    psp = {
+        'NAME': psu_name,
+        'TYPE': get_psu_type(psu_name)
+    }
+    for item in data:
+        key, val = item
+        if key.startswith('POWER_SUPPLY_'):
+            psp_name = key.upper().replace('POWER_SUPPLY_', '')
+            if psp_name != "NAME":
+                psp_name = 'POWER_SUPPLY_PROP_' + psp_name
+                psp.update({psp_name: val})
+    return psp
+
+def uevent_to_psp(psu_name):
+    psp = {}
+    data_uevent = get_sysfs(psu_name, 'uevent')
+    data = []
+    if data_uevent:
+        for item in data_uevent:
+            parsed = item.split('=')
+            if len(parsed) == 2:
+                data.append((parsed[0], parsed[1]))
+    
+    psp.update(get_psp(psu_name, data))
+    return psp
+
+
+def udev_to_psp(udev):
+    psp = {}
+    data = udev.items()
+    for item in data:
+        key, val = item
+        if key == 'POWER_SUPPLY_NAME':
+            psu_name = val
+    psp.update(get_psp(psu_name, data))
+    return psp
+
+def monitor():
+    while True:
+        # sysfs
+        for device in os.listdir(SYS_CLASS_POWER_SUPPLY):
+            print(json.dumps(uevent_to_psp(device)), flush=True)
+        
+        # udev
+        context = pyudev.Context()
+        monitor = pyudev.Monitor.from_netlink(context)
+        monitor.filter_by(subsystem='power_supply')
+        device = monitor.poll(10)
+        if device and device.action == 'change':
+            print(json.dumps(udev_to_psp(device)), flush=True)
+
+
+if __name__ == '__main__':
+    monitor()

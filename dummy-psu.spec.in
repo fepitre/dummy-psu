@@ -1,0 +1,105 @@
+%global module dummy_psu
+
+Name: dummy-psu
+Version: @VERSION@
+Release: @REL@
+Summary: Dummy power supply
+
+License: GPLv2+
+Source0: %{name}-%{version}.tar.gz
+Requires: dkms
+
+%description
+%{summary}.
+
+
+%package module
+Summary: Dummy power supply kernel module
+
+
+%description module
+%{summary}.
+
+
+%package dom0
+Summary: Dummy power supply dom0 part
+
+
+%description dom0
+%{summary}.
+
+
+%package vm
+Summary: Dummy power supply VM part
+BuildRequires: json-c-devel
+Requires: dummy-psu-module
+
+
+%description vm
+%{summary}.
+
+
+%prep
+%setup -q
+
+
+%build
+%{?set_build_flags}
+make client
+
+
+%install
+%make_install
+
+
+%files module
+%defattr(-,root,root)
+/usr/src/%{module}-%{version}/Makefile
+/usr/src/%{module}-%{version}/%{module}.c
+/usr/src/%{module}-%{version}/%{module}.h
+/usr/src/%{module}-%{version}/dkms.conf
+/usr/src/%{module}-%{version}/power_supply.h
+
+
+%files dom0
+%defattr(-,root,root)
+%{_sysconfdir}/qubes-rpc/qubes.PowerSupply
+%config(noreplace) %{_sysconfdir}/qubes-rpc/policy/qubes.PowerSupply
+
+
+%files vm
+%defattr(-,root,root)
+/etc/qubes/post-install.d/20-dummy-psu.sh
+/usr/bin/qubes-psu-client
+/usr/lib/systemd/system/qubes-psu-client.service
+/usr/lib/systemd/system/module-load-dummy-psu.service
+
+
+%post module
+dkms add -m %{module} -v %{version} --rpm_safe_upgrade
+if [ -e /lib/modules/$(uname -r)/build/include ]; then
+    dkms build -m %{module} -v %{version}
+    dkms install -m %{module} -v %{version}
+else
+    echo -e ""
+    echo -e "Cannot find kernel headers for this kernel."
+    echo -e "Skipping build and install stages..."
+fi
+
+
+%preun module
+dkms remove -m %{module} -v %{version} --all --rpm_safe_upgrade
+
+
+%post vm
+%systemd_post dummy-psu.service
+%systemd_post module-load-dummy-psu.service
+
+
+%preun vm
+%systemd_postun dummy-psu.service
+%systemd_postun module-load-dummy-psu.service
+
+
+%changelog
+@CHANGELOG@
