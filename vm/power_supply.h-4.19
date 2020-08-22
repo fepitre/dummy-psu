@@ -5,6 +5,8 @@
 
 #include <linux/types.h>
 
+#ifndef __LINUX_POWER_SUPPLY_H__
+
 /*
  * All voltages, currents, charges, energies, time and temperatures in uV,
  * µA, µAh, µWh, seconds and tenths of degree Celsius unless otherwise
@@ -227,6 +229,8 @@ static inline _Bool power_supply_is_watt_property(enum power_supply_property psp
 
 	return 0;
 }
+
+#endif
 
 static inline _Bool power_supply_is_str_property(enum power_supply_property psp)
 {
