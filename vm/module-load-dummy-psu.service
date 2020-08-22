@@ -1,7 +1,6 @@
 [Unit]
 Description=Dummy psu module loader service
 ConditionPathExists=/var/run/qubes-service/dummy-psu
-After=default.target
 
 [Service]
 Type=oneshot
