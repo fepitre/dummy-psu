@@ -177,7 +177,7 @@ int main()
 
 	int status;
     FILE *fp;
-    char *cmd = "qrexec-client-vm dom0 qubes.PowerSupply";
+    char *cmd = "/usr/bin/qrexec-client-vm @default qubes.PowerSupply";
 
 	int curr_type;
 	char curr_name[MAX_KEYLENGTH];
