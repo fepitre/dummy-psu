@@ -15,6 +15,7 @@ Requires: dkms
 
 %package module
 Summary: Dummy power supply kernel module
+Requires: dkms
 
 
 %description module
