@@ -38,8 +38,7 @@ install:
 	install -m 664 vm/power_supply.h-$(KVER_MAJOR) $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/power_supply.h
 
 	# dom0 part
-	mkdir -p $(DESTDIR)/etc/qubes-rpc/policy
-	install -m 664 dom0/qubes.PowerSupply.policy $(DESTDIR)/etc/qubes-rpc/policy/qubes.PowerSupply
+	mkdir -p $(DESTDIR)/etc/qubes-rpc
 	install -m 775 dom0/qubes.PowerSupply $(DESTDIR)/etc/qubes-rpc/
 
 	# VM part
