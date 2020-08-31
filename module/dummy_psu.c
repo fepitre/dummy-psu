@@ -9,8 +9,7 @@
 #include <linux/uaccess.h>
 #include <linux/power_supply.h>
 
-// Header waiting for upstream
-#include "power_supply.h"
+#include <uapi/linux/power_supply.h>
 #include "dummy_psu.h"
 
 union psp_propval {
