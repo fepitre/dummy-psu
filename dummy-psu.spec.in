@@ -7,7 +7,7 @@ Summary: Dummy power supply
 
 License: GPLv2+
 Source0: %{name}-%{version}.tar.gz
-Requires: dkms
+
 
 %description
 %{summary}.
@@ -33,7 +33,6 @@ Summary: Dummy power supply dom0 part
 %package vm
 Summary: Dummy power supply VM part
 BuildRequires: json-c-devel
-Requires: dummy-psu-module
 
 
 %description vm
