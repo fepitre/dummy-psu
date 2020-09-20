@@ -94,8 +94,6 @@ dkms remove -m %{module} -v %{version} --all --rpm_safe_upgrade
 %post vm
 %systemd_post qubes-psu-client.service
 %systemd_post module-load-dummy-psu.service
-systemctl enable module-load-dummy-psu.service
-systemctl enable qubes-psu-client.service
 
 
 %preun vm
