@@ -6,10 +6,6 @@ KVER_MAJOR ?= $(word 1, $(subst ., ,$(KVER))).$(word 2, $(subst ., ,$(KVER)))
 # BEGIN LOCAL BUILD PART
 obj-m += module/dummy_psu.o
 
-ifeq (1,$(DEBUG))
-CFLAGS_dummy_psu.o := -DDEBUG
-endif
-
 .PHONY: module
 module:
 	$(MAKE) -C /lib/modules/$(KVER)/build M=$(PWD) modules
@@ -20,9 +16,13 @@ clean:
 client:
 	$(MAKE) -C vm client
 
-test: module client
+test: module
 	sudo rmmod dummy_psu || true
-	sudo insmod dummy_psu.ko
+	sudo insmod module/dummy_psu.ko
+ifeq (1,$(DEBUG))
+	sudo dmesg -n8
+	echo "file $(PWD)/module/dummy_psu.c +p" | sudo tee /sys/kernel/debug/dynamic_debug/control
+endif
 # END LOCAL BUILD PART
 
 install:

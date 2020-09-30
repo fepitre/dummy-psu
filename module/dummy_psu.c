@@ -119,7 +119,7 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 
 		pobj = kzalloc(sizeof(struct psu), GFP_KERNEL);
 		if (IS_ERR(pobj)) {
-			pr_err("Failed to create PSU object\n");
+			pr_err("IOCTL_PSU_CREATE: Failed to create PSU object\n");
 			return PTR_ERR(pobj);
 		}
 		filep->private_data = pobj;
@@ -135,40 +135,44 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 	case IOCTL_PSU_ADD_PSP:
 		if (filep->private_data) {
 			pobj = filep->private_data;
-			if (copy_from_user(
-				    &psp, (void __user *)arg,
-				    sizeof(enum power_supply_property)) != 0)
-				return -EFAULT;
 			if (pobj->num_properties >= MAX_PSU_PROPS) {
-				pr_err("%s: Cannot add property. Number of properties is reached\n",
+				pr_err("IOCTL_PSU_ADD_PSP: %s: Cannot add property. Number of properties is reached\n",
 				       pobj->dev_name);
 				return -EFAULT;
 			}
-			pr_debug("%s: Adding power_supply_property %d",
+			psp = arg;
+			if ((psp >= MAX_PSU_PROPS) || (psp < 0)) {
+				pr_err("IOCTL_PSU_ADD_PSP: %d: Invalid property.\n", psp);
+				return -EFAULT;
+			}
+			pr_debug("IOCTL_PSU_ADD_PSP: %s: Adding power_supply_property %d",
 				 pobj->dev_name, psp);
 			pobj->props[pobj->num_properties] = psp;
 			pobj->num_properties += 1;
 		} else {
-			pr_err("Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
+			pr_err("IOCTL_PSU_ADD_PSP: Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
 			return -EINVAL;
 		}
 		break;
 	case IOCTL_PSU_ADD_USB_TYPE:
 		if (filep->private_data) {
 			pobj = filep->private_data;
-			if (copy_from_user(
-				    &usbtype, (void __user *)arg,
-				    sizeof(enum power_supply_usb_type)) != 0)
-				return -EFAULT;
 			if (pobj->num_usb_types >= MAX_PSU_UBS_TYPES) {
-				pr_err("%s: Cannot add USB type. Number of USB types is reached\n",
+				pr_err("IOCTL_PSU_ADD_USB_TYPE: %s: Cannot add USB type. Number of USB types is reached\n",
 				       pobj->dev_name);
 				return -EFAULT;
 			}
+			usbtype = arg;
+			if ((usbtype >= MAX_PSU_UBS_TYPES) || (usbtype < 0)) {
+				pr_err("IOCTL_PSU_ADD_USB_TYPE: %d: Invalid USB type.\n", psp);
+				return -EFAULT;
+			}
+			pr_debug("IOCTL_PSU_ADD_USB_TYPE: %s: Adding USB type %d",
+				 pobj->dev_name, psp);
 			pobj->usb_types[pobj->num_usb_types] = usbtype;
 			pobj->num_usb_types += 1;
 		} else {
-			pr_err("Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
+			pr_err("IOCTL_PSU_ADD_USB_TYPE: Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
 			return -EINVAL;
 		}
 		break;
@@ -179,14 +183,14 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 					   sizeof(char[MAX_KEYLENGTH])) != 0)
 				return -EFAULT;
 			if (pobj->num_supplicants >= MAX_SUPPLICANTS) {
-				pr_err("%s: Cannot add supplicant. Number of supplicants is reached\n",
+				pr_err("IOCTL_PSU_ADD_SUPPLIED_TO: %s: Cannot add supplicant. Number of supplicants is reached\n",
 				       pobj->dev_name);
 				return -EFAULT;
 			}
 			pobj->supplied_to[pobj->num_supplicants] = supplied_to;
 			pobj->num_supplicants += 1;
 		} else {
-			pr_err("Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
+			pr_err("IOCTL_PSU_ADD_SUPPLIED_TO: Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
 			return -EINVAL;
 		}
 		break;
@@ -210,14 +214,14 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 					}
 				}
 				if (!psp_found)
-					pr_err("%s: Unknown property\n",
+					pr_err("IOCTL_PSU_UPDATE_PROPVAL: %s: Unknown property\n",
 					       pobj->dev_name);
 			} else {
-				pr_err("Cannot find PSU device. Missing IOCTL_PSU_REGISTER call?\n");
+				pr_err("IOCTL_PSU_UPDATE_PROPVAL: Cannot find PSU device. Missing IOCTL_PSU_REGISTER call?\n");
 				return -EINVAL;
 			}
 		} else {
-			pr_err("Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
+			pr_err("IOCTL_PSU_UPDATE_PROPVAL: Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
 			return -EINVAL;
 		}
 		break;
@@ -227,14 +231,14 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 			if (!(pobj->psy)) {
 				pobj->desc.name = pobj->dev_name;
 				pobj->desc.properties = pobj->props;
-				pobj->desc.num_properties =
-					pobj->num_properties;
+				pobj->desc.num_properties = pobj->num_properties;
 				pobj->desc.get_property = dummy_get_psp,
 				pobj->psy = power_supply_register(NULL, &pobj->desc, &pobj->config);
 				if (IS_ERR(pobj->psy)) {
-					pr_err("Failed to register\n");
+					ret = PTR_ERR(pobj->psy);
+					pr_err("IOCTL_PSU_REGISTER: Failed to register\n");
 					pobj->psy = NULL;
-					return PTR_ERR(pobj->psy);
+					return ret;
 				} else {
 					pobj->psy->drv_data = filep;
 				}
@@ -244,7 +248,7 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 		}
 		break;
 	default:
-		pr_err("Invalid IOCTL command\n");
+		pr_err("dummy_psu: Invalid IOCTL command\n");
 		return -ENOTTY;
 	}
 	return ret;

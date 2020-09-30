@@ -107,6 +107,7 @@ static int strtoenum(const char *str_enum) {
 	if (!strcmp("POWER_SUPPLY_PROP_HEALTH", str_enum)) { return POWER_SUPPLY_PROP_HEALTH; };
 	if (!strcmp("POWER_SUPPLY_PROP_PRESENT", str_enum)) { return POWER_SUPPLY_PROP_PRESENT; };
 	if (!strcmp("POWER_SUPPLY_PROP_ONLINE", str_enum)) { return POWER_SUPPLY_PROP_ONLINE; };
+	if (!strcmp("POWER_SUPPLY_PROP_AUTHENTIC", str_enum)) { return POWER_SUPPLY_PROP_AUTHENTIC; };
 	if (!strcmp("POWER_SUPPLY_PROP_TECHNOLOGY", str_enum)) { return POWER_SUPPLY_PROP_TECHNOLOGY; };
 	if (!strcmp("POWER_SUPPLY_PROP_CYCLE_COUNT", str_enum)) { return POWER_SUPPLY_PROP_CYCLE_COUNT; };
 	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_MAX", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_MAX; };
@@ -114,20 +115,89 @@ static int strtoenum(const char *str_enum) {
 	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN; };
 	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN; };
 	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_NOW", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_AVG", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_AVG; };
+	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_OCV", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_OCV; };
+	if (!strcmp("POWER_SUPPLY_PROP_VOLTAGE_BOOT", str_enum)) { return POWER_SUPPLY_PROP_VOLTAGE_BOOT; };
+	if (!strcmp("POWER_SUPPLY_PROP_CURRENT_MAX", str_enum)) { return POWER_SUPPLY_PROP_CURRENT_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_CURRENT_NOW", str_enum)) { return POWER_SUPPLY_PROP_CURRENT_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_CURRENT_AVG", str_enum)) { return POWER_SUPPLY_PROP_CURRENT_AVG; };
+	if (!strcmp("POWER_SUPPLY_PROP_CURRENT_BOOT", str_enum)) { return POWER_SUPPLY_PROP_CURRENT_BOOT; };
 	if (!strcmp("POWER_SUPPLY_PROP_POWER_NOW", str_enum)) { return POWER_SUPPLY_PROP_POWER_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_POWER_AVG", str_enum)) { return POWER_SUPPLY_PROP_POWER_AVG; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_EMPTY_DESIGN", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_EMPTY_DESIGN; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_FULL", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_FULL; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_EMPTY", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_EMPTY; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_NOW", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_AVG", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_AVG; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_COUNTER", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_COUNTER; };
+	if (!strcmp("POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT", str_enum)) { return POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT; };
+	if (!strcmp("POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX", str_enum)) { return POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE", str_enum)) { return POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE; };
+	if (!strcmp("POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX", str_enum)) { return POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_CONTROL_START_THRESHOLD", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_CONTROL_START_THRESHOLD; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_CONTROL_END_THRESHOLD", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_CONTROL_END_THRESHOLD; };
+	if (!strcmp("POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT", str_enum)) { return POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT; };
+	if (!strcmp("POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT", str_enum)) { return POWER_SUPPLY_PROP_INPUT_VOLTAGE_LIMIT; };
+	if (!strcmp("POWER_SUPPLY_PROP_INPUT_POWER_LIMIT", str_enum)) { return POWER_SUPPLY_PROP_INPUT_POWER_LIMIT; };
 	if (!strcmp("POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN", str_enum)) { return POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN; };
 	if (!strcmp("POWER_SUPPLY_PROP_ENERGY_EMPTY_DESIGN", str_enum)) { return POWER_SUPPLY_PROP_ENERGY_EMPTY_DESIGN; };
 	if (!strcmp("POWER_SUPPLY_PROP_ENERGY_FULL", str_enum)) { return POWER_SUPPLY_PROP_ENERGY_FULL; };
+	if (!strcmp("POWER_SUPPLY_PROP_ENERGY_EMPTY", str_enum)) { return POWER_SUPPLY_PROP_ENERGY_EMPTY; };
 	if (!strcmp("POWER_SUPPLY_PROP_ENERGY_NOW", str_enum)) { return POWER_SUPPLY_PROP_ENERGY_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_ENERGY_AVG", str_enum)) { return POWER_SUPPLY_PROP_ENERGY_AVG; };
 	if (!strcmp("POWER_SUPPLY_PROP_CAPACITY", str_enum)) { return POWER_SUPPLY_PROP_CAPACITY; };
+	if (!strcmp("POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN", str_enum)) { return POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN; };
+	if (!strcmp("POWER_SUPPLY_PROP_CAPACITY_ALERT_MAX", str_enum)) { return POWER_SUPPLY_PROP_CAPACITY_ALERT_MAX; };
 	if (!strcmp("POWER_SUPPLY_PROP_CAPACITY_LEVEL", str_enum)) { return POWER_SUPPLY_PROP_CAPACITY_LEVEL; };
 	if (!strcmp("POWER_SUPPLY_PROP_TEMP", str_enum)) { return POWER_SUPPLY_PROP_TEMP; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_MAX", str_enum)) { return POWER_SUPPLY_PROP_TEMP_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_MIN", str_enum)) { return POWER_SUPPLY_PROP_TEMP_MIN; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_ALERT_MIN", str_enum)) { return POWER_SUPPLY_PROP_TEMP_ALERT_MIN; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_ALERT_MAX", str_enum)) { return POWER_SUPPLY_PROP_TEMP_ALERT_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_AMBIENT", str_enum)) { return POWER_SUPPLY_PROP_TEMP_AMBIENT; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MIN", str_enum)) { return POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MIN; };
+	if (!strcmp("POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MAX", str_enum)) { return POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MAX; };
+	if (!strcmp("POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW", str_enum)) { return POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG", str_enum)) { return POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG; };
+	if (!strcmp("POWER_SUPPLY_PROP_TIME_TO_FULL_NOW", str_enum)) { return POWER_SUPPLY_PROP_TIME_TO_FULL_NOW; };
+	if (!strcmp("POWER_SUPPLY_PROP_TIME_TO_FULL_AVG", str_enum)) { return POWER_SUPPLY_PROP_TIME_TO_FULL_AVG; };
+	if (!strcmp("POWER_SUPPLY_PROP_TYPE", str_enum)) { return POWER_SUPPLY_PROP_TYPE; };
+	if (!strcmp("POWER_SUPPLY_PROP_USB_TYPE", str_enum)) { return POWER_SUPPLY_PROP_USB_TYPE; };
+	if (!strcmp("POWER_SUPPLY_PROP_SCOPE", str_enum)) { return POWER_SUPPLY_PROP_SCOPE; };
+	if (!strcmp("POWER_SUPPLY_PROP_PRECHARGE_CURRENT", str_enum)) { return POWER_SUPPLY_PROP_PRECHARGE_CURRENT; };
+	if (!strcmp("POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT", str_enum)) { return POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT; };
+	if (!strcmp("POWER_SUPPLY_PROP_CALIBRATE", str_enum)) { return POWER_SUPPLY_PROP_CALIBRATE; };
 	if (!strcmp("POWER_SUPPLY_PROP_MODEL_NAME", str_enum)) { return POWER_SUPPLY_PROP_MODEL_NAME; };
 	if (!strcmp("POWER_SUPPLY_PROP_MANUFACTURER", str_enum)) { return POWER_SUPPLY_PROP_MANUFACTURER; };
 	if (!strcmp("POWER_SUPPLY_PROP_SERIAL_NUMBER", str_enum)) { return POWER_SUPPLY_PROP_SERIAL_NUMBER; };
 	if (!strcmp("POWER_SUPPLY_TYPE_MAINS", str_enum)) { return POWER_SUPPLY_TYPE_MAINS; };
 	if (!strcmp("POWER_SUPPLY_TYPE_BATTERY", str_enum)) { return POWER_SUPPLY_TYPE_BATTERY; };
 	if (!strcmp("POWER_SUPPLY_TYPE_USB", str_enum)) { return POWER_SUPPLY_TYPE_USB; };
+	if (!strcmp("POWER_SUPPLY_TYPE_UNKNOWN", str_enum)) { return POWER_SUPPLY_TYPE_UNKNOWN; };
+	if (!strcmp("POWER_SUPPLY_TYPE_BATTERY", str_enum)) { return POWER_SUPPLY_TYPE_BATTERY; };
+	if (!strcmp("POWER_SUPPLY_TYPE_UPS", str_enum)) { return POWER_SUPPLY_TYPE_UPS; };
+	if (!strcmp("POWER_SUPPLY_TYPE_MAINS", str_enum)) { return POWER_SUPPLY_TYPE_MAINS; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB", str_enum)) { return POWER_SUPPLY_TYPE_USB; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB_DCP", str_enum)) { return POWER_SUPPLY_TYPE_USB_DCP; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB_CDP", str_enum)) { return POWER_SUPPLY_TYPE_USB_CDP; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB_ACA", str_enum)) { return POWER_SUPPLY_TYPE_USB_ACA; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB_TYPE_C", str_enum)) { return POWER_SUPPLY_TYPE_USB_TYPE_C; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB_PD", str_enum)) { return POWER_SUPPLY_TYPE_USB_PD; };
+	if (!strcmp("POWER_SUPPLY_TYPE_USB_PD_DRP", str_enum)) { return POWER_SUPPLY_TYPE_USB_PD_DRP; };
+	if (!strcmp("POWER_SUPPLY_TYPE_APPLE_BRICK_ID", str_enum)) { return POWER_SUPPLY_TYPE_APPLE_BRICK_ID; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_UNKNOWN", str_enum)) { return POWER_SUPPLY_USB_TYPE_UNKNOWN; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_SDP", str_enum)) { return POWER_SUPPLY_USB_TYPE_SDP; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_DCP", str_enum)) { return POWER_SUPPLY_USB_TYPE_DCP; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_CDP", str_enum)) { return POWER_SUPPLY_USB_TYPE_CDP; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_ACA", str_enum)) { return POWER_SUPPLY_USB_TYPE_ACA; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_C", str_enum)) { return POWER_SUPPLY_USB_TYPE_C; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_PD", str_enum)) { return POWER_SUPPLY_USB_TYPE_PD; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_PD_DRP", str_enum)) { return POWER_SUPPLY_USB_TYPE_PD_DRP; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_PD_PPS", str_enum)) { return POWER_SUPPLY_USB_TYPE_PD_PPS; };
+	if (!strcmp("POWER_SUPPLY_USB_TYPE_APPLE_BRICK_ID", str_enum)) { return POWER_SUPPLY_USB_TYPE_APPLE_BRICK_ID; };
 
 	return -1;
 }
@@ -139,36 +209,6 @@ int main()
 
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);
-
-	static enum power_supply_property ac_props[] = {
-		POWER_SUPPLY_PROP_ONLINE,
-	};
-
-	static enum power_supply_property battery_props[] = {
-		POWER_SUPPLY_PROP_STATUS,
-		POWER_SUPPLY_PROP_CHARGE_TYPE,
-		POWER_SUPPLY_PROP_HEALTH,
-		POWER_SUPPLY_PROP_PRESENT,
-		POWER_SUPPLY_PROP_ONLINE,
-		POWER_SUPPLY_PROP_TECHNOLOGY,
-		POWER_SUPPLY_PROP_CYCLE_COUNT,
-		POWER_SUPPLY_PROP_VOLTAGE_MAX,
-		POWER_SUPPLY_PROP_VOLTAGE_MIN,
-		POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
-		POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
-		POWER_SUPPLY_PROP_VOLTAGE_NOW,
-		POWER_SUPPLY_PROP_POWER_NOW,
-		POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN,
-		POWER_SUPPLY_PROP_ENERGY_EMPTY_DESIGN,
-		POWER_SUPPLY_PROP_ENERGY_FULL,
-		POWER_SUPPLY_PROP_ENERGY_NOW,
-		POWER_SUPPLY_PROP_CAPACITY,
-		POWER_SUPPLY_PROP_CAPACITY_LEVEL,
-		POWER_SUPPLY_PROP_TEMP,
-		POWER_SUPPLY_PROP_MODEL_NAME,
-		POWER_SUPPLY_PROP_MANUFACTURER,
-		POWER_SUPPLY_PROP_SERIAL_NUMBER,
-	};
 
     #define BUFSIZE 4096
 	char buf[BUFSIZE];
@@ -184,8 +224,7 @@ int main()
 
 	int dev_num;
 
-	enum power_supply_property *psp_props;
-	int psp_num;
+	int psp_prop;
 
 	struct ioctl_propval propval;
 
@@ -233,29 +272,24 @@ int main()
 					}
 
 					ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_CREATE, &power_supplies[dev_num].specs);
-					// printf("ioctl: return (%d) errno (%d)\n", ret, errno);
+					// printf("IOCTL_PSU_CREATE: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 
-					if (curr_type == POWER_SUPPLY_TYPE_MAINS) {
-						psp_props = ac_props;
-						psp_num = sizeof(ac_props) / sizeof(ac_props[0]);
-					} else if (curr_type == POWER_SUPPLY_TYPE_BATTERY) {
-						psp_props = battery_props;
-						psp_num = sizeof(battery_props) / sizeof(battery_props[0]);
-					}
-
-					for (i = 0; i < psp_num; i++) {
-						ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_ADD_PSP, &psp_props[i]);
-						// printf("ioctl: return (%d) errno (%d)\n", ret, errno);
+					json_object_object_foreach(jobj, key, val) {
+						psp_prop = strtoenum(key);
+						if (!strncmp(key, "POWER_SUPPLY_PROP_", 18) && (psp_prop >= 0)) {
+							ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_ADD_PSP, psp_prop);
+							// printf("IOCTL_PSU_ADD_PSP: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+						}
 					}
 
 					ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_REGISTER);
-					// printf("ioctl: return (%d) errno (%d)\n", ret, errno);
+					// printf("IOCTL_PSU_REGISTER: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 				}
 				// printf("File descriptor %s(%d)\n", curr_name, power_supplies[dev_num].fd);
 				json_object_object_foreach(jobj, key, val) {
 					if (!strncmp(key, "POWER_SUPPLY_PROP_", 18) && (strtoenum(key) >= 0)) {
 						propval.psp = strtoenum(key);
-						if (power_supply_is_str_property(strtoenum(key))) {
+						if (power_supply_is_str_property(propval.psp)) {
 							strncpy(propval.strval, json_object_get_string(val), MAX_KEYLENGTH);
 							propval.intval = 0;
 						} else if (!strcmp(key, "POWER_SUPPLY_PROP_STATUS")) {
@@ -272,7 +306,7 @@ int main()
 							propval.strval[0] = '\0';
 						}
 						ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_UPDATE_PROPVAL, &propval);
-						// fprintf(stderr, "ioctl: return (%d) errno (%d)\n", ret, errno);
+						// fprintf(stderr, "IOCTL_PSU_UPDATE_PROPVAL: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 					}
 				}
 			} else {
