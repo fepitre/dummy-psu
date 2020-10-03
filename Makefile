@@ -14,7 +14,7 @@ clean:
 	$(MAKE) -C /lib/modules/$(KVER)/build M=$(PWD) clean
 
 client:
-	$(MAKE) -C vm client
+	$(MAKE) -C receiver client
 
 test: module
 	sudo rmmod dummy_psu || true
@@ -35,14 +35,14 @@ install:
 	sed -i 's/@VERSION@/$(VERSION)/g; s/@NAME@/dummy_psu/g' $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/dkms.conf
 	
 	# Header waiting for upstream
-	install -m 664 vm/power_supply.h-$(KVER_MAJOR) $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/power_supply.h
+	install -m 664 receiver/power_supply.h-$(KVER_MAJOR) $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/power_supply.h
 
-	# dom0 part
+	# sender part
 	mkdir -p $(DESTDIR)/etc/qubes-rpc
-	install -m 775 dom0/qubes.PowerSupply $(DESTDIR)/etc/qubes-rpc/
+	install -m 775 sender/qubes.PowerSupply $(DESTDIR)/etc/qubes-rpc/
 
-	# VM part
+	# receiver part
 	mkdir -p $(DESTDIR)/usr/bin/qubes $(DESTDIR)/usr/lib/systemd/system $(DESTDIR)/etc/qubes/post-install.d
-	install -m 755 vm/20-dummy-psu.sh $(DESTDIR)/etc/qubes/post-install.d
-	install -m 775 vm/qubes-psu-client $(DESTDIR)/usr/bin
-	install -m 664 vm/qubes-psu-client.service vm/module-load-dummy-psu.service $(DESTDIR)/usr/lib/systemd/system
+	install -m 755 receiver/20-dummy-psu.sh $(DESTDIR)/etc/qubes/post-install.d
+	install -m 775 receiver/qubes-psu-client $(DESTDIR)/usr/bin
+	install -m 664 receiver/qubes-psu-client.service receiver/module-load-dummy-psu.service $(DESTDIR)/usr/lib/systemd/system
