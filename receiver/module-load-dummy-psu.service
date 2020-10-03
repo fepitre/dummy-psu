@@ -1,6 +1,6 @@
 [Unit]
 Description=Dummy psu module loader service
-ConditionPathExists=/var/run/qubes-service/dummy-psu
+ConditionPathExistsGlob=/var/run/qubes-service/dummy-psu@*
 
 [Service]
 Type=oneshot

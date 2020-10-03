@@ -45,4 +45,4 @@ install:
 	mkdir -p $(DESTDIR)/usr/bin/qubes $(DESTDIR)/usr/lib/systemd/system $(DESTDIR)/etc/qubes/post-install.d
 	install -m 755 receiver/20-dummy-psu.sh $(DESTDIR)/etc/qubes/post-install.d
 	install -m 775 receiver/qubes-psu-client $(DESTDIR)/usr/bin
-	install -m 664 receiver/qubes-psu-client.service receiver/module-load-dummy-psu.service $(DESTDIR)/usr/lib/systemd/system
+	install -m 664 receiver/qubes-psu-client@.service receiver/module-load-dummy-psu.service $(DESTDIR)/usr/lib/systemd/system

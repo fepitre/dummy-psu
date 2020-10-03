@@ -14,6 +14,8 @@
 #include "power_supply.h"
 #include "dummy_psu.h"
 
+#define BUFSIZE 4096
+
 int sigint_received = 0;
 int sigterm_received = 0;
 int cleaned_power_supplies = 0;
@@ -202,31 +204,41 @@ static int strtoenum(const char *str_enum) {
 	return -1;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	int i, ret = 0;
-	struct psu *power_supplies = calloc(MAX_PSU, sizeof(struct psu));
-
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);
 
-    #define BUFSIZE 4096
+	int i, ret = 0;
+	struct psu *power_supplies = calloc(MAX_PSU, sizeof(struct psu));
 	char buf[BUFSIZE];
     struct json_object *jobj;
 	struct json_object *tmp;
-
-	int status;
-    FILE *fp;
-    char *cmd = "/usr/bin/qrexec-client-vm @default qubes.PowerSupply";
-
 	int curr_type;
 	char curr_name[MAX_KEYLENGTH];
-
 	int dev_num;
-
 	int psp_prop;
-
 	struct ioctl_propval propval;
+	int status;
+    FILE *fp;
+    char cmd[79];
+
+	strncpy(cmd, "/usr/bin/qrexec-client-vm ", 27);
+
+	if( argc == 2 ) {
+		if (!strncmp("default", argv[1], 9)) {
+			strncat(cmd, "@default", 9);
+		} else {
+			strncat(cmd, argv[1], 33);
+		}
+	} else if ( argc > 2 ) {
+		printf("ERROR: too many arguments provided\n");
+		return -1;
+	} else {
+		strncat(cmd, "@default", 9);
+	}
+
+	strncat(cmd, " qubes.PowerSupply", 19);
 
     fp = popen(cmd, "r");
     if (fp == NULL) {
