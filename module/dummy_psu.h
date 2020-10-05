@@ -13,9 +13,12 @@
 #define IOCTL_PSU_REGISTER _IO(IOCTL_MAGIC_NUMBER, 0x1)
 #define IOCTL_PSU_CREATE _IOW(IOCTL_MAGIC_NUMBER, 0x2, struct ioctl_psu)
 #define IOCTL_PSU_ADD_PSP _IOW(IOCTL_MAGIC_NUMBER, 0x3, char[MAX_KEYLENGTH])
-#define IOCTL_PSU_ADD_USB_TYPE _IOW(IOCTL_MAGIC_NUMBER, 0x4, char[MAX_KEYLENGTH])
-#define IOCTL_PSU_ADD_SUPPLIED_TO _IOW(IOCTL_MAGIC_NUMBER, 0x5, char[MAX_KEYLENGTH])
-#define IOCTL_PSU_UPDATE_PROPVAL _IOW(IOCTL_MAGIC_NUMBER, 0x6, struct ioctl_pspval)
+#define IOCTL_PSU_ADD_USB_TYPE                                                 \
+	_IOW(IOCTL_MAGIC_NUMBER, 0x4, char[MAX_KEYLENGTH])
+#define IOCTL_PSU_ADD_SUPPLIED_TO                                              \
+	_IOW(IOCTL_MAGIC_NUMBER, 0x5, char[MAX_KEYLENGTH])
+#define IOCTL_PSU_UPDATE_PROPVAL                                               \
+	_IOW(IOCTL_MAGIC_NUMBER, 0x6, struct ioctl_pspval)
 
 struct ioctl_psu {
 	char dev_type[MAX_KEYLENGTH];

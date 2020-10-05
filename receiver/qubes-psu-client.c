@@ -24,7 +24,8 @@ struct psu {
 	struct ioctl_psu specs;
 };
 
-void sig_handler(int s) {
+void sig_handler(int s)
+{
 	if (s == SIGINT) {
 		fprintf(stderr, "INFO: SIGINT received\n");
 		sigint_received = 1;
@@ -35,7 +36,8 @@ void sig_handler(int s) {
 	}
 }
 
-void clean_power_supplies(struct psu *power_supplies) {
+void clean_power_supplies(struct psu *power_supplies)
+{
 	int i;
 	for (i = 0; i < MAX_PSU; i++) {
 		if (power_supplies[i].fd >= 0) {
@@ -54,7 +56,7 @@ int main(int argc, char *argv[])
 	int i, ret = 0;
 	struct psu *power_supplies = calloc(MAX_PSU, sizeof(struct psu));
 	char buf[BUFSIZE];
-    struct json_object *jobj;
+	struct json_object *jobj;
 	struct json_object *tmp;
 	char curr_type[MAX_KEYLENGTH];
 	char curr_name[MAX_KEYLENGTH];
@@ -62,18 +64,18 @@ int main(int argc, char *argv[])
 	int psp_prop;
 	struct ioctl_pspval propval;
 	int status;
-    FILE *fp;
-    char cmd[79];
+	FILE *fp;
+	char cmd[79];
 
 	strncpy(cmd, "/usr/bin/qrexec-client-vm ", 27);
 
-	if( argc == 2 ) {
+	if (argc == 2) {
 		if (!strncmp("default", argv[1], 9)) {
 			strncat(cmd, "@default", 9);
 		} else {
 			strncat(cmd, argv[1], 33);
 		}
-	} else if ( argc > 2 ) {
+	} else if (argc > 2) {
 		printf("ERROR: too many arguments provided\n");
 		return -1;
 	} else {
@@ -82,18 +84,18 @@ int main(int argc, char *argv[])
 
 	strncat(cmd, " qubes.PowerSupply", 19);
 
-    fp = popen(cmd, "r");
-    if (fp == NULL) {
-        printf("ERROR: failed to open pipe\n");
-        return -1;
-    }
+	fp = popen(cmd, "r");
+	if (fp == NULL) {
+		printf("ERROR: failed to open pipe\n");
+		return -1;
+	}
 
-    while (fgets(buf, BUFSIZE, fp) != NULL) {
-        if (sigint_received || sigterm_received) {
-            break;
-        }
+	while (fgets(buf, BUFSIZE, fp) != NULL) {
+		if (sigint_received || sigterm_received) {
+			break;
+		}
 		setvbuf(stdout, NULL, _IONBF, 0);
-        jobj = json_tokener_parse(buf);
+		jobj = json_tokener_parse(buf);
 
 		json_object_object_get_ex(jobj, "NAME", &tmp);
 		strncpy(curr_name, json_object_get_string(tmp), MAX_KEYLENGTH);
@@ -104,11 +106,16 @@ int main(int argc, char *argv[])
 		dev_num = -1;
 		if (strcmp(curr_name, "\0") && strcmp(curr_name, "\0")) {
 			for (i = 0; i < MAX_PSU; i++) {
-				if (!strcmp(power_supplies[i].specs.dev_name, "\0")) {
-					strncpy(power_supplies[i].specs.dev_type, curr_type, MAX_KEYLENGTH);
-					strncpy(power_supplies[i].specs.dev_name, curr_name, MAX_KEYLENGTH);
+				if (!strcmp(power_supplies[i].specs.dev_name,
+					    "\0")) {
+					strncpy(power_supplies[i].specs.dev_type,
+						curr_type, MAX_KEYLENGTH);
+					strncpy(power_supplies[i].specs.dev_name,
+						curr_name, MAX_KEYLENGTH);
 					dev_num = i;
-				} else if (!strcmp(power_supplies[i].specs.dev_name, curr_name)) {
+				} else if (!strcmp(power_supplies[i]
+							   .specs.dev_name,
+						   curr_name)) {
 					dev_num = i;
 				}
 
@@ -119,44 +126,70 @@ int main(int argc, char *argv[])
 
 			if (dev_num >= 0) {
 				if (power_supplies[dev_num].fd <= 0) {
-					power_supplies[dev_num].fd = open("/dev/dummy_psu", O_RDWR);
+					power_supplies[dev_num].fd =
+						open("/dev/dummy_psu", O_RDWR);
 					if (power_supplies[dev_num].fd < 0) {
-						fprintf(stderr, "ERROR: failed to open file descriptor\n");
+						fprintf(stderr,
+							"ERROR: failed to open file descriptor\n");
 						return -1;
 					}
 
-					ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_CREATE, &power_supplies[dev_num].specs);
+					ret = ioctl(
+						power_supplies[dev_num].fd,
+						IOCTL_PSU_CREATE,
+						&power_supplies[dev_num].specs);
 					// printf("IOCTL_PSU_CREATE: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 
-					json_object_object_foreach(jobj, key, val) {
-						if (!strncmp(key, "POWER_SUPPLY_PROP_", 18)) {
-							ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_ADD_PSP, key);
+					json_object_object_foreach(jobj, key,
+								   val)
+					{
+						if (!strncmp(
+							    key,
+							    "POWER_SUPPLY_PROP_",
+							    18)) {
+							ret = ioctl(
+								power_supplies[dev_num]
+									.fd,
+								IOCTL_PSU_ADD_PSP,
+								key);
 							// printf("IOCTL_PSU_ADD_PSP: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 						}
 					}
 
-					ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_REGISTER);
+					ret = ioctl(power_supplies[dev_num].fd,
+						    IOCTL_PSU_REGISTER);
 					// printf("IOCTL_PSU_REGISTER: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 				}
-				json_object_object_foreach(jobj, key, val) {
-					if (!strncmp(key, "POWER_SUPPLY_PROP_", 18)) {
-						strncpy(propval.psp, key, MAX_KEYLENGTH);
-						strncpy(propval.val, json_object_get_string(val), MAX_KEYLENGTH);
-						ret = ioctl(power_supplies[dev_num].fd, IOCTL_PSU_UPDATE_PROPVAL, &propval);
+				json_object_object_foreach(jobj, key, val)
+				{
+					if (!strncmp(key, "POWER_SUPPLY_PROP_",
+						     18)) {
+						strncpy(propval.psp, key,
+							MAX_KEYLENGTH);
+						strncpy(propval.val,
+							json_object_get_string(
+								val),
+							MAX_KEYLENGTH);
+						ret = ioctl(
+							power_supplies[dev_num]
+								.fd,
+							IOCTL_PSU_UPDATE_PROPVAL,
+							&propval);
 						// fprintf(stderr, "IOCTL_PSU_UPDATE_PROPVAL: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 					}
 				}
 			} else {
-				fprintf(stderr, "WARNING: maximum number of device reached\n");
+				fprintf(stderr,
+					"WARNING: maximum number of device reached\n");
 			}
 		}
-    }
+	}
 
-    status = pclose(fp);
-    if (status == -1)  {
-        fprintf(stderr, "ERROR: an error occurred while running cmd\n");
-        return -1;
-    }
+	status = pclose(fp);
+	if (status == -1) {
+		fprintf(stderr, "ERROR: an error occurred while running cmd\n");
+		return -1;
+	}
 
 	if (!cleaned_power_supplies) {
 		clean_power_supplies(power_supplies);
