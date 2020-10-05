@@ -2,15 +2,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
-// #include <sys/stat.h>
-// #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
 #include <json.h>
 
-// Header waiting for upstream
 #include "dummy_psu.h"
 
 #define BUFSIZE 4096
