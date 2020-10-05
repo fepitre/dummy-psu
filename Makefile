@@ -3,6 +3,10 @@ VERSION := $(shell cat version 2>/dev/null)
 KVER ?= $(shell uname -r)
 KVER_MAJOR ?= $(word 1, $(subst ., ,$(KVER))).$(word 2, $(subst ., ,$(KVER)))
 
+ifeq (1,$(DEBUG))
+export CFLAGS ?= -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection
+endif
+
 # BEGIN LOCAL BUILD PART
 obj-m += module/dummy_psu.o
 

@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 	char curr_type[MAX_KEYLENGTH];
 	char curr_name[MAX_KEYLENGTH];
 	int dev_num;
-	int psp_prop;
 	struct ioctl_pspval propval;
 	int status;
 	FILE *fp;
@@ -95,10 +94,10 @@ int main(int argc, char *argv[])
 		jobj = json_tokener_parse(buf);
 
 		json_object_object_get_ex(jobj, "NAME", &tmp);
-		strncpy(curr_name, json_object_get_string(tmp), MAX_KEYLENGTH);
+		strncpy(curr_name, json_object_get_string(tmp), MAX_KEYLENGTH - 1);
 
 		json_object_object_get_ex(jobj, "TYPE", &tmp);
-		strncpy(curr_type, json_object_get_string(tmp), MAX_KEYLENGTH);
+		strncpy(curr_type, json_object_get_string(tmp), MAX_KEYLENGTH - 1);
 
 		dev_num = -1;
 		if (strcmp(curr_name, "\0") && strcmp(curr_name, "\0")) {
@@ -162,11 +161,11 @@ int main(int argc, char *argv[])
 					if (!strncmp(key, "POWER_SUPPLY_PROP_",
 						     18)) {
 						strncpy(propval.psp, key,
-							MAX_KEYLENGTH);
+							MAX_KEYLENGTH - 1);
 						strncpy(propval.val,
 							json_object_get_string(
 								val),
-							MAX_KEYLENGTH);
+							MAX_KEYLENGTH - 1);
 						ret = ioctl(
 							power_supplies[dev_num]
 								.fd,
@@ -192,4 +191,6 @@ int main(int argc, char *argv[])
 		clean_power_supplies(power_supplies);
 		fprintf(stderr, "INFO: terminating\n");
 	}
+
+	return ret;
 }
