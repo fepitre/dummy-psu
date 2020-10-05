@@ -60,7 +60,6 @@ make client
 /usr/src/%{module}-%{version}/%{module}.c
 /usr/src/%{module}-%{version}/%{module}.h
 /usr/src/%{module}-%{version}/dkms.conf
-/usr/src/%{module}-%{version}/power_supply.h
 
 
 %files sender

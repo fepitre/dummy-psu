@@ -16,7 +16,7 @@ clean:
 client:
 	$(MAKE) -C receiver client
 
-test: module
+test: module client
 	sudo rmmod dummy_psu || true
 	sudo insmod module/dummy_psu.ko
 ifeq (1,$(DEBUG))
@@ -33,9 +33,6 @@ install:
 	install -m 664 module/dkms.conf.in $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/dkms.conf
 	install -m 664 module/Makefile.dkms $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/Makefile
 	sed -i 's/@VERSION@/$(VERSION)/g; s/@NAME@/dummy_psu/g' $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/dkms.conf
-	
-	# Header waiting for upstream
-	install -m 664 receiver/power_supply.h-$(KVER_MAJOR) $(DESTDIR)/usr/src/dummy_psu-$(VERSION)/power_supply.h
 
 	# sender part
 	mkdir -p $(DESTDIR)/etc/qubes-rpc
