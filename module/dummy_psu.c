@@ -9,7 +9,6 @@
 #include <linux/uaccess.h>
 #include <linux/power_supply.h>
 
-#include <uapi/linux/power_supply.h>
 #include "dummy_psu.h"
 
 static int strtoenum(const char *str_enum)
@@ -308,6 +307,20 @@ static int strtoenum(const char *str_enum)
 	};
 
 	return -1;
+}
+
+static inline _Bool power_supply_is_str_property(enum power_supply_property psp)
+{
+	switch (psp) {
+	case POWER_SUPPLY_PROP_MODEL_NAME:
+	case POWER_SUPPLY_PROP_MANUFACTURER:
+	case POWER_SUPPLY_PROP_SERIAL_NUMBER:
+		return 1;
+	default:
+		break;
+	}
+
+	return 0;
 }
 
 // battery_property_map related picked and adapted from test_power.c
