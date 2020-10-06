@@ -2,7 +2,7 @@
 
 Name: dummy-psu
 Version: @VERSION@
-Release: @REL@
+Release: @REL@%{?dist}
 Summary: Dummy power supply
 
 License: GPLv2+
