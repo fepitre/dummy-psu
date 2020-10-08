@@ -412,7 +412,7 @@ struct psu {
 	enum power_supply_usb_type usb_types[MAX_PSU_UBS_TYPES];
 
 	int num_supplicants;
-	char *supplied_to[MAX_PSU];
+	char *supplied_to[MAX_SUPPLICANTS];
 
 	union psp_propval psp_val[MAX_PSU_PROPS];
 };
@@ -466,12 +466,20 @@ int dummy_psu_open(struct inode *inode, struct file *filep)
 int dummy_psu_release(struct inode *inode, struct file *filep)
 {
 	struct psu *pobj;
+	int i;
 	if (filep->private_data) {
 		pobj = filep->private_data;
-		printk("%s", pobj->dev_name);
 		if (pobj->psy) {
+			pr_debug("dummy_psu: %s: unregister", pobj->dev_name);
 			power_supply_unregister(pobj->psy);
 		}
+		if (pobj->num_supplicants >= 1) {
+			for (i = 0; i < pobj->num_supplicants; i++) {
+				pr_debug("dummy_psu: free supplicants %d", i);
+				kfree(pobj->supplied_to[i]);
+			}
+		}
+		pr_debug("dummy_psu: free PSU object");
 		kfree(pobj);
 	}
 	return 0;
@@ -515,6 +523,7 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 		pobj->num_properties = 0;
 		pobj->num_usb_types = 0;
 		pobj->num_supplicants = 0;
+		pr_debug("dummy_psu: %s: register", pobj->dev_name);
 		break;
 	case IOCTL_PSU_ADD_PSP:
 		if (filep->private_data) {
@@ -582,8 +591,9 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 			if (copy_from_user(&supplied_to, (void __user *)arg,
 					   sizeof(char[MAX_KEYLENGTH])) != 0)
 				return -EFAULT;
-			pobj->supplied_to[pobj->num_supplicants] = supplied_to;
+			pobj->supplied_to[pobj->num_supplicants] = kstrndup(supplied_to, MAX_KEYLENGTH, GFP_KERNEL);
 			pobj->num_supplicants += 1;
+			pr_debug("IOCTL_PSU_ADD_SUPPLIED_TO: %s: Supply to %s", pobj->dev_name, supplied_to);
 		} else {
 			pr_err("IOCTL_PSU_ADD_SUPPLIED_TO: Cannot find PSU specs. Missing IOCTL_PSU_CREATE call?\n");
 			return -EINVAL;

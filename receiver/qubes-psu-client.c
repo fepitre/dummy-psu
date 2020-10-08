@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 		strncpy(curr_type, json_object_get_string(tmp), MAX_KEYLENGTH - 1);
 
 		dev_num = -1;
-		if (strcmp(curr_name, "\0") && strcmp(curr_name, "\0")) {
+		if (strncmp(curr_name, "\0", 1) && strncmp(curr_type, "\0", 1)) {
 			for (i = 0; i < MAX_PSU; i++) {
 				if (!strcmp(power_supplies[i].specs.dev_name,
 					    "\0")) {
