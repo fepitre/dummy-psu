@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
 	struct json_object *tmp;
 	char curr_type[MAX_KEYLENGTH];
 	char curr_name[MAX_KEYLENGTH];
+	char supplied_to[MAX_KEYLENGTH];
 	int dev_num;
 	struct ioctl_pspval propval;
 	int status;
@@ -94,13 +95,16 @@ int main(int argc, char *argv[])
 		jobj = json_tokener_parse(buf);
 
 		json_object_object_get_ex(jobj, "NAME", &tmp);
-		strncpy(curr_name, json_object_get_string(tmp), MAX_KEYLENGTH - 1);
+		strncpy(curr_name, json_object_get_string(tmp),
+			MAX_KEYLENGTH - 1);
 
 		json_object_object_get_ex(jobj, "TYPE", &tmp);
-		strncpy(curr_type, json_object_get_string(tmp), MAX_KEYLENGTH - 1);
+		strncpy(curr_type, json_object_get_string(tmp),
+			MAX_KEYLENGTH - 1);
 
 		dev_num = -1;
-		if (strncmp(curr_name, "\0", 1) && strncmp(curr_type, "\0", 1)) {
+		if (strncmp(curr_name, "\0", 1) &&
+		    strncmp(curr_type, "\0", 1)) {
 			for (i = 0; i < MAX_PSU; i++) {
 				if (!strcmp(power_supplies[i].specs.dev_name,
 					    "\0")) {
@@ -149,6 +153,11 @@ int main(int argc, char *argv[])
 								IOCTL_PSU_ADD_PSP,
 								key);
 							// printf("IOCTL_PSU_ADD_PSP: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+						}
+						if (!strncmp(key, "SUPPLIED_TO", 11)) {
+							strncpy(supplied_to, json_object_get_string(val), MAX_KEYLENGTH - 1);
+							ret = ioctl(power_supplies[dev_num].fd,	IOCTL_PSU_ADD_SUPPLIED_TO, &supplied_to);
+							fprintf(stderr, "IOCTL_PSU_ADD_SUPPLIED_TO: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
 						}
 					}
 

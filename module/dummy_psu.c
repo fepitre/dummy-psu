@@ -591,6 +591,11 @@ long dummy_psu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 			if (copy_from_user(&supplied_to, (void __user *)arg,
 					   sizeof(char[MAX_KEYLENGTH])) != 0)
 				return -EFAULT;
+			if (pobj->desc.type != POWER_SUPPLY_TYPE_MAINS) {
+				pr_err("IOCTL_PSU_ADD_SUPPLIED_TO: %s: Cannot supply PSU type other than ac.\n",
+				       pobj->dev_name);
+				return -EFAULT;
+			}
 			pobj->supplied_to[pobj->num_supplicants] = kstrndup(supplied_to, MAX_KEYLENGTH, GFP_KERNEL);
 			pobj->num_supplicants += 1;
 			pr_debug("IOCTL_PSU_ADD_SUPPLIED_TO: %s: Supply to %s", pobj->dev_name, supplied_to);
