@@ -15,6 +15,7 @@
 int sigint_received = 0;
 int sigterm_received = 0;
 int cleaned_power_supplies = 0;
+int print_debug = 0;
 
 struct psu {
 	int fd;
@@ -63,6 +64,11 @@ int main(int argc, char *argv[])
 	int status;
 	FILE *fp;
 	char cmd[79];
+	char *debug = getenv("DEBUG");
+
+	if ((debug != NULL) && (!strncmp(debug, "1", 1))) {
+		print_debug = 1;
+	}
 
 	strncpy(cmd, "/usr/bin/qrexec-client-vm ", 27);
 
@@ -138,7 +144,11 @@ int main(int argc, char *argv[])
 						power_supplies[dev_num].fd,
 						IOCTL_PSU_CREATE,
 						&power_supplies[dev_num].specs);
-					// printf("IOCTL_PSU_CREATE: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+					if (print_debug) {
+						printf("IOCTL_PSU_CREATE: return (%d) errno (%d): %s\n",
+						       ret, errno,
+						       strerror(errno));
+					}
 
 					json_object_object_foreach(jobj, key,
 								   val)
@@ -152,18 +162,44 @@ int main(int argc, char *argv[])
 									.fd,
 								IOCTL_PSU_ADD_PSP,
 								key);
-							// printf("IOCTL_PSU_ADD_PSP: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+							if (print_debug) {
+								printf("IOCTL_PSU_ADD_PSP: return (%d) errno (%d): %s\n",
+								       ret,
+								       errno,
+								       strerror(
+									       errno));
+							}
 						}
-						if (!strncmp(key, "SUPPLIED_TO", 11)) {
-							strncpy(supplied_to, json_object_get_string(val), MAX_KEYLENGTH - 1);
-							ret = ioctl(power_supplies[dev_num].fd,	IOCTL_PSU_ADD_SUPPLIED_TO, &supplied_to);
-							fprintf(stderr, "IOCTL_PSU_ADD_SUPPLIED_TO: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+						if (!strncmp(key, "SUPPLIED_TO",
+							     11)) {
+							strncpy(supplied_to,
+								json_object_get_string(
+									val),
+								MAX_KEYLENGTH -
+									1);
+							ret = ioctl(
+								power_supplies[dev_num]
+									.fd,
+								IOCTL_PSU_ADD_SUPPLIED_TO,
+								&supplied_to);
+							if (print_debug) {
+								fprintf(stderr,
+									"IOCTL_PSU_ADD_SUPPLIED_TO: return (%d) errno (%d): %s\n",
+									ret,
+									errno,
+									strerror(
+										errno));
+							}
 						}
 					}
 
 					ret = ioctl(power_supplies[dev_num].fd,
 						    IOCTL_PSU_REGISTER);
-					// printf("IOCTL_PSU_REGISTER: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+					if (print_debug) {
+						printf("IOCTL_PSU_REGISTER: return (%d) errno (%d): %s\n",
+						       ret, errno,
+						       strerror(errno));
+					}
 				}
 				json_object_object_foreach(jobj, key, val)
 				{
@@ -180,7 +216,13 @@ int main(int argc, char *argv[])
 								.fd,
 							IOCTL_PSU_UPDATE_PROPVAL,
 							&propval);
-						// fprintf(stderr, "IOCTL_PSU_UPDATE_PROPVAL: return (%d) errno (%d): %s\n", ret, errno, strerror(errno));
+						if (print_debug) {
+							fprintf(stderr,
+								"IOCTL_PSU_UPDATE_PROPVAL: return (%d) errno (%d): %s\n",
+								ret, errno,
+								strerror(
+									errno));
+						}
 					}
 				}
 			} else {
