@@ -1,10 +1,10 @@
 [Unit]
 Description=Dummy power supply client service
-ConditionPathExists=/var/run/qubes-service/dummy-psu
+ConditionPathExists=/var/run/qubes-service/dummy-psu@%i
 After=qubes-qrexec-agent.service module-load-dummy-psu.service
 
 [Service]
-ExecStart=/usr/bin/qubes-psu-client
+ExecStart=/usr/bin/qubes-psu-client %i
 
 [Install]
 WantedBy=multi-user.target

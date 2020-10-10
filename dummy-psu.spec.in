@@ -2,7 +2,7 @@
 
 Name: dummy-psu
 Version: @VERSION@
-Release: @REL@
+Release: @REL@%{?dist}
 Summary: Dummy power supply
 
 License: GPLv2+
@@ -22,20 +22,21 @@ Requires: dkms
 %{summary}.
 
 
-%package dom0
-Summary: Dummy power supply dom0 part
+%package sender
+Requires: python%{python3_pkgversion}-pyudev
+Summary: Dummy power supply sender part
 
 
-%description dom0
+%description sender
 %{summary}.
 
 
-%package vm
-Summary: Dummy power supply VM part
+%package receiver
+Summary: Dummy power supply receiver part
 BuildRequires: json-c-devel
 
 
-%description vm
+%description receiver
 %{summary}.
 
 
@@ -58,19 +59,18 @@ make client
 /usr/src/%{module}-%{version}/%{module}.c
 /usr/src/%{module}-%{version}/%{module}.h
 /usr/src/%{module}-%{version}/dkms.conf
-/usr/src/%{module}-%{version}/power_supply.h
 
 
-%files dom0
+%files sender
 %defattr(-,root,root)
 %{_sysconfdir}/qubes-rpc/qubes.PowerSupply
 
 
-%files vm
+%files receiver
 %defattr(-,root,root)
 /etc/qubes/post-install.d/20-dummy-psu.sh
 /usr/bin/qubes-psu-client
-/usr/lib/systemd/system/qubes-psu-client.service
+/usr/lib/systemd/system/qubes-psu-client@.service
 /usr/lib/systemd/system/module-load-dummy-psu.service
 
 
@@ -90,15 +90,13 @@ fi
 dkms remove -m %{module} -v %{version} --all --rpm_safe_upgrade
 
 
-%post vm
-%systemd_post qubes-psu-client.service
+%post receiver
+%systemd_post qubes-psu-client@.service
 %systemd_post module-load-dummy-psu.service
-systemctl enable module-load-dummy-psu.service
-systemctl enable qubes-psu-client.service
 
 
-%preun vm
-%systemd_postun qubes-psu-client.service
+%preun receiver
+%systemd_postun qubes-psu-client@.service
 %systemd_postun module-load-dummy-psu.service
 
 
