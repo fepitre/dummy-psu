@@ -1,0 +1,8 @@
+host:
+  rpm:
+    spec:
+    - dummy-psu.spec
+vm:
+  rpm:
+    spec:
+    - dummy-psu.spec
